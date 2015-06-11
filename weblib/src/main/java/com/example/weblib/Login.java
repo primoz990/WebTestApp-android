@@ -7,7 +7,7 @@ public abstract class Login implements LoginInterface {
     public String getAuthHeader(String username, String password) {
         byte[] base64bytes = Base64.encode(
                 (username + ":" + password).getBytes(),
-                Base64.DEFAULT
+                Base64.NO_WRAP
         );
         String credentials = new String(base64bytes);
         return "basic" + " " + credentials;
