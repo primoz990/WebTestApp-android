@@ -23,14 +23,9 @@ public abstract class DataHelper extends Data {
         this.context = context;
     }
 
-    @Override
-    public boolean save(ArrayList<Company> companies) {
-        //TODO implement caching in background thread
-        return false;
-    }
 
     @Override
-    public void getObject() {
+    public void getFromWeb() {
         RequestQueue queue = Volley.newRequestQueue(context);
         JsonObjectRequest jsObjRequest = new JsonObjectRequest
                 (Request.Method.GET, URL, null, new Response.Listener<JSONObject>() {
@@ -40,7 +35,7 @@ public abstract class DataHelper extends Data {
                         if (companies.size() > 0) {
                             save(companies);
                         }
-                        onSuccess(companies, false);//TODO implement caching
+                        onSuccess(companies, false);
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -52,7 +47,14 @@ public abstract class DataHelper extends Data {
     }
 
     @Override
-    public void getString() {
-        new Exception("Method not implemeted!").printStackTrace();
+    public boolean setToDB(ArrayList<Company> companies) {
+        //TODO implement
+        return false;
+    }
+
+    @Override
+    public ArrayList<Company> getFromDB() {
+        //TODO impelement
+        return null;
     }
 }

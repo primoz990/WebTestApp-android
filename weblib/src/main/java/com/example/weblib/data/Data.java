@@ -9,11 +9,28 @@ import java.util.ArrayList;
 public abstract class Data implements DataInterface {
 
     @Override
-    public void execute(boolean doParsing) {
-        if (doParsing) {
+    public void execute() {
             getObject();
+    }
+
+    @Override
+    public boolean save(ArrayList<Company> companies) {
+        DataCache.getInstance().setCompanies(companies);
+        setToDB(companies);
+        return false;
+    }
+
+    @Override
+    public void getObject() {
+        boolean haveDB = false;//TODO implement DB
+        boolean cache = DataCache.getInstance().hasData();
+        long age = DataCache.getInstance().getAgeMs();
+        if (cache && age <= DataCache.MAX_AGE_MS) {
+            onSuccess(DataCache.getInstance().getCompanies(), true);
+        } else if (haveDB) {
+            getFromDB();
         } else {
-            getString();
+            getFromWeb();
         }
     }
 

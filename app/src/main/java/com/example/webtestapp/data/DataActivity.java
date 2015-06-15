@@ -29,7 +29,7 @@ public class DataActivity extends AppCompatActivity {
             public void onSuccess(ArrayList<Company> companies, boolean cached) {
                 adapter = new DataAdapter(DataActivity.this, R.layout.data_list_item, companies);
                 lvData.setAdapter(adapter);
-                Log.e("SUCCESS", "Companies: " + companies.size());
+                Log.e("SUCCESS", "Companies: " + companies.size() + " Cached:" + cached);
                 if (pd != null && pd.isShowing()) {
                     pd.dismiss();
                 }
@@ -43,6 +43,6 @@ public class DataActivity extends AppCompatActivity {
                 }
             }
 
-        }.execute(true);
+        }.execute();
     }
 }

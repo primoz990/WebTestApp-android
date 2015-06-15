@@ -8,17 +8,21 @@ public interface DataInterface {
 
     String URL = "http://ajpes.intera.si/index/search?search=frizer&type=title";
 
-    void execute(boolean doParsing);
+    void execute();
 
     ArrayList<Company> parse(JSONObject object);
 
     ArrayList<Company> parse(String response);
 
+    boolean setToDB(ArrayList<Company> companies);
+
+    ArrayList<Company> getFromDB();
+
     boolean save(ArrayList<Company> companies);
 
     void getObject();
 
-    void getString();
+    void getFromWeb();
 
     void onError(String message);
 
