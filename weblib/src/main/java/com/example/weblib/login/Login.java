@@ -1,4 +1,4 @@
-package com.example.weblib;
+package com.example.weblib.login;
 
 import android.util.Base64;
 
@@ -16,7 +16,7 @@ public abstract class Login implements LoginInterface {
     @Override
     public void execute(String username, String password) {
         if (username == null || password == null || username.length() <= 0 || password.length() <= 0) {
-            onLoginFailed(0, "No credentials!");
+            onLoginFailed("No credentials!");
         } else {
             login(username, password);
         }

@@ -10,9 +10,9 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
-import com.example.weblib.Login;
-import com.example.weblib.LoginInterface;
 import com.example.weblib.WebResult;
+import com.example.weblib.login.Login;
+import com.example.weblib.login.LoginInterface;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,22 +27,6 @@ public abstract class LoginHelper extends Login {
     @Override
     public void login(String username, String password) {
         RequestQueue queue = Volley.newRequestQueue(context);
-        /*
-        StringRequest stringRequest = new StringRequest(
-                Request.Method.GET,
-                LoginInterface.URL,new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                onLoginSuccess();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                onLoginFailed(error.networkResponse.statusCode, error.getMessage());
-            }
-        });
-        queue.add(stringRequest);
-*/
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", getAuthHeader(username, password));
         LoginRequest loginRequest = new LoginRequest(LoginInterface.URL, WebResult.class, headers, new Response.Listener() {
@@ -53,7 +37,7 @@ public abstract class LoginHelper extends Login {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                onLoginFailed(error.networkResponse.statusCode, error.getMessage());
+                onLoginFailed("" + error.networkResponse.statusCode);
             }
         });
         queue.add(loginRequest);

@@ -1,4 +1,4 @@
-package com.example.weblib;
+package com.example.weblib.login;
 
 public interface LoginInterface {
 
@@ -8,7 +8,7 @@ public interface LoginInterface {
 
     void login(final String username, final String password);
 
-    void onLoginFailed(int code, String message);
+    void onLoginFailed(String message);
 
     void onLoginSuccess();
 }

@@ -1,11 +1,14 @@
 package com.example.webtestapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.example.webtestapp.data.DataActivity;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -20,13 +23,14 @@ public class LoginActivity extends AppCompatActivity {
 
             new LoginHelper(LoginActivity.this) {
                 @Override
-                public void onLoginFailed(int code, String message) {
-                    Toast.makeText(LoginActivity.this, "Error(code=" + code + "): " + message, Toast.LENGTH_SHORT).show();
+                public void onLoginFailed(String message) {
+                    Toast.makeText(LoginActivity.this, "Error: " + message, Toast.LENGTH_SHORT).show();
                 }
 
                 @Override
                 public void onLoginSuccess() {
                     Toast.makeText(LoginActivity.this, "Success!", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(LoginActivity.this, DataActivity.class));
                 }
             }.execute(user, pass);
 

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="material_teal_500">#009688</color>
+    <color name="material_teal_DarkCustom">#00645b</color>
+    <color name="material_teal_A400">#00BFA5</color>
+    <color name="white">#FFF</color>
+    <color name="list_title_text">#777</color>
+    <color name="list_detail_text">#999</color>
+    <color name="list_value_text">#888</color>
+    <color name="edittext_border">#AAA</color>
+    <color name="search_hint">#AAA</color>
+
+</resources>
