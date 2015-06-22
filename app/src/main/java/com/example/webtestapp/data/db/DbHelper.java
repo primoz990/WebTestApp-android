@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.weblib.data.Company;
 import com.example.weblib.db.DbContract;
 
 public class DbHelper extends SQLiteOpenHelper {
@@ -14,14 +15,16 @@ public class DbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(DbContract.SQL_CREATE_COMPANIES);
+        Company _c = new Company();
+        db.execSQL(_c.getSqlCreateTable());
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         /*  This database is only a cache for online data, so its upgrade policy is
             to simply to discard the data and start over */
-        db.execSQL(DbContract.SQL_DELETE_COMPANIES);
+        Company _c = new Company();
+        db.execSQL(_c.getSqlDeleteTable());
         onCreate(db);
     }
 

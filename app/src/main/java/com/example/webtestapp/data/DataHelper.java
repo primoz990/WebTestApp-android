@@ -1,8 +1,8 @@
 package com.example.webtestapp.data;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
+import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
@@ -14,7 +14,6 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
 import com.example.weblib.data.Company;
 import com.example.weblib.data.Data;
-import com.example.weblib.db.DbContract;
 import com.example.webtestapp.data.db.DbHelper;
 
 import org.json.JSONObject;
@@ -58,33 +57,22 @@ public abstract class DataHelper extends Data {
             public void run() {
                 DbHelper dbHelper = new DbHelper(context);
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
-                db.execSQL(DbContract.SQL_DELETE_ALL_COMPANY_ENTRIES);
+                final Company _c = new Company();
+                db.execSQL(_c.getSqlDeleteEntries());
                 if (companies != null && companies.size() > 0) {
                     for (int i = 0; i < companies.size(); i++) {
                         Company c = companies.get(i);
                         if (c != null) {
-                            // Create a new map of values, where column names are the keys
-                            ContentValues values = new ContentValues();
-                            values.put(DbContract.CompanyEntry.COLUMN_NAME_ID, i);
-                            values.put(DbContract.CompanyEntry.COLUMN_NAME_TAXNUMBER, c.taxNumber);
-                            values.put(DbContract.CompanyEntry.COLUMN_NAME_FULLNAME, c.fullName);
-                            values.put(DbContract.CompanyEntry.COLUMN_NAME_SHORTNAME, c.shortName);
-                            values.put(DbContract.CompanyEntry.COLUMN_NAME_IDNUMBER, c.idNumber);
-                            values.put(DbContract.CompanyEntry.COLUMN_NAME_ADDRESSPOSTNUMBER, c.addressPostNumber);
-                            values.put(DbContract.CompanyEntry.COLUMN_NAME_ADDRESSHOUSENUMBER, c.addressHouseNumber);
-                            values.put(DbContract.CompanyEntry.COLUMN_NAME_ADDRESSMUNICIPALITY, c.addressMunicipality);
-                            values.put(DbContract.CompanyEntry.COLUMN_NAME_ADDRESSPOST, c.addressPost);
-                            values.put(DbContract.CompanyEntry.COLUMN_NAME_ADDRESSSTREET, c.addressStreet);
-                            values.put(DbContract.CompanyEntry.COLUMN_NAME_SEARCHCOLUMN, c.searchColumn);
-
-                            // Insert the new row, returning the primary key value of the new row
-                            long newRowId = db.insert(
-                                    DbContract.CompanyEntry.TABLE_NAME,
-                                    null,
-                                    values);
-                            Log.d("ROW insert", newRowId + "");
+                            String insert = c.getSqlInsert();
+                            try {
+                                db.execSQL(insert);
+                                Log.d("ROW insert", c.getFullName());
+                            } catch (SQLException sqle) {
+                                Log.e("ROW insert FAILED", "Exception");
+                                sqle.printStackTrace();
+                            }
                         } else {
-                            Log.d("ROW insert FAILED", "Object is NULL");
+                            Log.e("ROW insert FAILED", "Object is NULL");
                         }
                     }
                 }
@@ -100,46 +88,24 @@ public abstract class DataHelper extends Data {
 
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
-
-        String[] projection = {
-                DbContract.CompanyEntry.COLUMN_NAME_ID,
-                DbContract.CompanyEntry.COLUMN_NAME_TAXNUMBER,
-                DbContract.CompanyEntry.COLUMN_NAME_FULLNAME,
-                DbContract.CompanyEntry.COLUMN_NAME_SHORTNAME,
-                DbContract.CompanyEntry.COLUMN_NAME_IDNUMBER,
-                DbContract.CompanyEntry.COLUMN_NAME_ADDRESSPOSTNUMBER,
-                DbContract.CompanyEntry.COLUMN_NAME_ADDRESSHOUSENUMBER,
-                DbContract.CompanyEntry.COLUMN_NAME_ADDRESSMUNICIPALITY,
-                DbContract.CompanyEntry.COLUMN_NAME_ADDRESSPOST,
-                DbContract.CompanyEntry.COLUMN_NAME_ADDRESSSTREET,
-                DbContract.CompanyEntry.COLUMN_NAME_SEARCHCOLUMN
-        };
-
-        Cursor cursor = db.query(
-                DbContract.CompanyEntry.TABLE_NAME,  // The table to query
-                projection,                        // The columns to return
-                null,                              // The columns for the WHERE clause
-                null,                              // The values for the WHERE clause
-                null,                              // don't group the rows
-                null,                              // don't filter by row groups
-                null                               // The sort order
-        );
-
+        final Company _c = new Company();
+        Cursor cursor = db.rawQuery(_c.getSqlSelectAll(), null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
             do {
                 Company company = new Company();
-                company.taxNumber = cursor.getInt(cursor.getColumnIndex(DbContract.CompanyEntry.COLUMN_NAME_TAXNUMBER));
-                company.fullName = cursor.getString(cursor.getColumnIndex(DbContract.CompanyEntry.COLUMN_NAME_FULLNAME));
-                company.shortName = cursor.getString(cursor.getColumnIndex(DbContract.CompanyEntry.COLUMN_NAME_SHORTNAME));
-                company.idNumber = cursor.getString(cursor.getColumnIndex(DbContract.CompanyEntry.COLUMN_NAME_IDNUMBER));
-                company.addressPostNumber = cursor.getString(cursor.getColumnIndex(DbContract.CompanyEntry.COLUMN_NAME_ADDRESSPOSTNUMBER));
-                company.addressHouseNumber = cursor.getString(cursor.getColumnIndex(DbContract.CompanyEntry.COLUMN_NAME_ADDRESSHOUSENUMBER));
-                company.addressMunicipality = cursor.getString(cursor.getColumnIndex(DbContract.CompanyEntry.COLUMN_NAME_ADDRESSMUNICIPALITY));
-                company.addressPost = cursor.getString(cursor.getColumnIndex(DbContract.CompanyEntry.COLUMN_NAME_ADDRESSPOST));
-                company.addressStreet = cursor.getString(cursor.getColumnIndex(DbContract.CompanyEntry.COLUMN_NAME_ADDRESSSTREET));
-                company.searchColumn = cursor.getString(cursor.getColumnIndex(DbContract.CompanyEntry.COLUMN_NAME_SEARCHCOLUMN));
+                company.taxNumber = cursor.getInt(cursor.getColumnIndex(Company.SQL_COLUMN_NAME_TAXNUMBER));
+                company.fullName = cursor.getString(cursor.getColumnIndex(Company.SQL_COLUMN_NAME_FULLNAME));
+                company.shortName = cursor.getString(cursor.getColumnIndex(Company.SQL_COLUMN_NAME_SHORTNAME));
+                company.idNumber = cursor.getString(cursor.getColumnIndex(Company.SQL_COLUMN_NAME_IDNUMBER));
+                company.addressPostNumber = cursor.getString(cursor.getColumnIndex(Company.SQL_COLUMN_NAME_ADDRESSPOSTNUMBER));
+                company.addressHouseNumber = cursor.getString(cursor.getColumnIndex(Company.SQL_COLUMN_NAME_ADDRESSHOUSENUMBER));
+                company.addressMunicipality = cursor.getString(cursor.getColumnIndex(Company.SQL_COLUMN_NAME_ADDRESSMUNICIPALITY));
+                company.addressPost = cursor.getString(cursor.getColumnIndex(Company.SQL_COLUMN_NAME_ADDRESSPOST));
+                company.addressStreet = cursor.getString(cursor.getColumnIndex(Company.SQL_COLUMN_NAME_ADDRESSSTREET));
+                company.searchColumn = cursor.getString(cursor.getColumnIndex(Company.SQL_COLUMN_NAME_SEARCHCOLUMN));
                 companies.add(company);
+                Log.d("DB READ", company.getFullName());
             } while (cursor.moveToNext());
             cursor.close();
         }

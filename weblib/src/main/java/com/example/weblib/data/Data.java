@@ -22,12 +22,13 @@ public abstract class Data implements DataInterface {
 
     @Override
     public void getObject() {
-        boolean haveDB = false;//TODO implement DB
+        boolean haveDB = true;
         boolean cache = DataCache.getInstance().hasData();
         long age = DataCache.getInstance().getAgeMs();
         if (cache && age <= DataCache.MAX_AGE_MS) {
             onSuccess(DataCache.getInstance().getCompanies(), true);
         } else if (haveDB) {
+            //TODO check if data from db OK, and if not, fetch data from web!
             getFromDB();
         } else {
             getFromWeb();

@@ -1,6 +1,19 @@
 package com.example.weblib.data;
 
-public class Company {
+import com.example.weblib.db.DbObject;
+
+public class Company extends DbObject {
+
+    public static final String SQL_COLUMN_NAME_TAXNUMBER = "taxnumber";
+    public static final String SQL_COLUMN_NAME_FULLNAME = "fullname";
+    public static final String SQL_COLUMN_NAME_SHORTNAME = "shortname";
+    public static final String SQL_COLUMN_NAME_IDNUMBER = "idnumber";
+    public static final String SQL_COLUMN_NAME_ADDRESSPOSTNUMBER = "addresspostnumber";
+    public static final String SQL_COLUMN_NAME_ADDRESSHOUSENUMBER = "addresshousenumber";
+    public static final String SQL_COLUMN_NAME_ADDRESSMUNICIPALITY = "addressmunicipality";
+    public static final String SQL_COLUMN_NAME_ADDRESSPOST = "addresspost";
+    public static final String SQL_COLUMN_NAME_ADDRESSSTREET = "addressstreet";
+    public static final String SQL_COLUMN_NAME_SEARCHCOLUMN = "searchcolumn";
 
     public int taxNumber;
     public String fullName;
@@ -24,6 +37,51 @@ public class Company {
         this.addressPost = "";
         this.addressStreet = "";
         this.searchColumn = "";
+    }
+
+    public String[] getColumns() {
+        return new String[]{
+                SQL_COLUMN_NAME_TAXNUMBER,
+                SQL_COLUMN_NAME_FULLNAME,
+                SQL_COLUMN_NAME_SHORTNAME,
+                SQL_COLUMN_NAME_IDNUMBER,
+                SQL_COLUMN_NAME_ADDRESSPOSTNUMBER,
+                SQL_COLUMN_NAME_ADDRESSHOUSENUMBER,
+                SQL_COLUMN_NAME_ADDRESSMUNICIPALITY,
+                SQL_COLUMN_NAME_ADDRESSPOST,
+                SQL_COLUMN_NAME_ADDRESSSTREET,
+                SQL_COLUMN_NAME_SEARCHCOLUMN
+        };
+    }
+
+    public String[] getValues() {
+        return new String[]{
+                Integer.toString(this.taxNumber),
+                toSqlString(this.fullName),
+                toSqlString(this.shortName),
+                toSqlString(this.idNumber),
+                toSqlString(this.addressPostNumber),
+                toSqlString(this.addressHouseNumber),
+                toSqlString(this.addressMunicipality),
+                toSqlString(this.addressPost),
+                toSqlString(this.addressStreet),
+                toSqlString(this.searchColumn)
+        };
+    }
+
+    public String[] getTypes() {
+        return new String[]{
+                TYPE_INTEGER,
+                TYPE_TEXT,
+                TYPE_TEXT,
+                TYPE_TEXT,
+                TYPE_TEXT,
+                TYPE_TEXT,
+                TYPE_TEXT,
+                TYPE_TEXT,
+                TYPE_TEXT,
+                TYPE_TEXT
+        };
     }
 
     public int getTaxNumber() {
