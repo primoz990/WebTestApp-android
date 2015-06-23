@@ -14,9 +14,9 @@ public interface DataInterface {
 
     ArrayList<Company> parse(String response);
 
-    boolean setToDB(ArrayList<Company> companies);
+    void setToDB(ArrayList<Company> companies);
 
-    ArrayList<Company> getFromDB();
+    void getFromDB();
 
     boolean save(ArrayList<Company> companies);
 

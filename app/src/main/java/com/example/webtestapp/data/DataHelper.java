@@ -52,7 +52,7 @@ public abstract class DataHelper extends Data {
     }
 
     @Override
-    public boolean setToDB(final ArrayList<Company> companies) {
+    public void setToDB(final ArrayList<Company> companies) {
         new Thread(new Runnable() {
             public void run() {
                 DbHelper dbHelper = new DbHelper(context);
@@ -78,13 +78,12 @@ public abstract class DataHelper extends Data {
                 }
             }
         }).start();
-        return false;
     }
 
     @Override
-    public ArrayList<Company> getFromDB() {
+    public void getFromDB() {
         //TODO in background thread
-        ArrayList<Company> companies = new ArrayList<>();
+        ArrayList<Company> companies = null;
 
         DbHelper dbHelper = new DbHelper(context);
         SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -92,6 +91,7 @@ public abstract class DataHelper extends Data {
         Cursor cursor = db.rawQuery(_c.getSqlSelectAll(), null);
         if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
+            companies = new ArrayList<>();
             do {
                 Company company = new Company();
                 company.taxNumber = cursor.getInt(cursor.getColumnIndex(Company.SQL_COLUMN_NAME_TAXNUMBER));
@@ -109,7 +109,12 @@ public abstract class DataHelper extends Data {
             } while (cursor.moveToNext());
             cursor.close();
         }
-        Log.d("DB READ", companies.size() + " companies");
-        return companies;
+        if (companies != null && companies.size() > 0) {
+            Log.d("DB READ", companies.size() + " companies");
+            onSuccess(companies, true);
+        } else {
+            onError("No data read from DB");
+            Log.d("DB READ", "NO DATA");
+        }
     }
 }
